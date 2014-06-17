@@ -19,22 +19,12 @@ package com.soomla;
 /**
  * This class holds the store's configurations.
  *
- * IMPORTANT: Change <code>SOOM_SEC</code> below !!!
  * IMPORTANT: Change <code>obfuscationSalt</code> below !!!
  * IMPORTANT: Before releasing your game, set <code>DB_DELETE</code> to false !!!
- * IMPORTANT: Before releasing your game, set <code>AllowAndroidTestPurchases</code> to false !!!
  */
 public class SoomlaConfig {
 
-    /**
-     * Select your in-app billing service.
-     * The default is Google Play using https://github.com/soomla/android-store-google-play
-     * If this value is left empty, you will not be able to release your game to the market.
-     */
-//    public static final IIabService InAppBillingService = null;
-
-    //CHANGE THIS SECRET!!!
-    public static String SOOM_SEC = "SINC_SSEEKK";
+    public static int SOOMLA_VERSION = 1;
 
     //Set to true if you want to print out debug messages
     public static boolean logDebug = false;
@@ -65,6 +55,5 @@ public class SoomlaConfig {
     /** Shared Preferences **/
     public static final String PREFS_NAME      = "store.prefs";
     public static final String DB_INITIALIZED  = "db_initialized";
-    public static final String CUSTOM_SEC      = "SU#LL#SE#RE";
 
 }

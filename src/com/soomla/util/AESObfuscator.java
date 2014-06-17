@@ -20,10 +20,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.soomla.Soomla;
 import com.soomla.SoomlaApp;
 import com.soomla.SoomlaConfig;
 import com.soomla.SoomlaUtils;
-import com.soomla.data.ObscuredSharedPreferences;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -62,11 +62,8 @@ public class AESObfuscator {
      *    create this unique identifier.
      */
     public AESObfuscator(byte[] salt, String applicationId, String deviceId) {
-        SharedPreferences prefs = new ObscuredSharedPreferences(
-                SoomlaApp.getAppContext().getSharedPreferences(
-                        SoomlaConfig.PREFS_NAME, Context.MODE_PRIVATE));
         byte[] passwordData = null;
-        String sec = prefs.getString(SoomlaConfig.CUSTOM_SEC, "SOOMLA_SEC");
+        String sec = Soomla.SECRET;
         if (sec.equals("SOOMLA_SEC")) {
             SoomlaUtils.LogError(TAG, "You didn't provide a custom secret!!! Stopping now!");
 
