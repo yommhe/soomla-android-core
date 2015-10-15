@@ -23,10 +23,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.soomla.SoomlaConfig;
+import com.soomla.SoomlaUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * The KeyValDatabase provides a basic key-value store above SQLite.
@@ -80,15 +85,25 @@ public class KeyValDatabase {
      * @param val the val of the key-val pair
      */
     public synchronized void setKeyVal(String key, String val) {
-        ContentValues values = new ContentValues();
-        values.put(KEYVAL_COLUMN_VAL, val);
-
-        int affected = mStoreDB.update(KEYVAL_TABLE_NAME, values, KEYVAL_COLUMN_KEY + "='"
-                + key + "'", null);
-        if (affected == 0){
-            values.put(KEYVAL_COLUMN_KEY, key);
-            mStoreDB.replace(KEYVAL_TABLE_NAME, null, values);
+        Future future = setValueAsync(key, val, null);
+        try {
+            future.get();
+        } catch (InterruptedException e) {
+            SoomlaUtils.LogError(TAG, e.getMessage());
+        } catch (ExecutionException e) {
+            SoomlaUtils.LogError(TAG, e.getMessage());
         }
+    }
+
+    /**
+     * Sets the given value to the given key asynchronously.
+     *
+     * @param key the key of the key-val pair
+     * @param val the val of the key-val pair
+     * @param callback the callback to run when the value is set
+     */
+    public synchronized void setKeyValAsync(final String key, final String val, final Runnable callback) {
+        setValueAsync(key, val, callback);
     }
 
     /**
@@ -182,7 +197,7 @@ public class KeyValDatabase {
     public synchronized int getQueryCount(String query) {
         query = query.replace('*', '%');
         Cursor cursor = mStoreDB.rawQuery("SELECT COUNT(" + KEYVAL_COLUMN_VAL + ") from " +
-                        KEYVAL_TABLE_NAME + " WHERE " + KEYVAL_COLUMN_KEY + " LIKE '" + query +"'", null);
+                KEYVAL_TABLE_NAME + " WHERE " + KEYVAL_COLUMN_KEY + " LIKE '" + query + "'", null);
         if(cursor != null) {
             boolean moved = cursor.moveToFirst();
             if (moved) {
@@ -214,6 +229,27 @@ public class KeyValDatabase {
         }
 
         return ret;
+    }
+
+    private Future<?> setValueAsync(final String key, final String val, final Runnable callback) {
+        return executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                ContentValues values = new ContentValues();
+                values.put(KEYVAL_COLUMN_VAL, val);
+
+                int affected = mStoreDB.update(KEYVAL_TABLE_NAME, values, KEYVAL_COLUMN_KEY + "='"
+                        + key + "'", null);
+                if (affected == 0) {
+                    values.put(KEYVAL_COLUMN_KEY, key);
+                    mStoreDB.replace(KEYVAL_TABLE_NAME, null, values);
+                }
+
+                if (callback != null) {
+                    callback.run();
+                }
+            }
+        });
     }
 
     /**
@@ -262,4 +298,6 @@ public class KeyValDatabase {
     private SQLiteDatabase mStoreDB;
 
     private DatabaseHelper mDatabaseHelper;
+
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 }
