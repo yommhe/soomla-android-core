@@ -4,7 +4,7 @@ set -e
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $DIR
 
-ANDROID_CORE_CACHE="~/.soomla/cache/android-core"
+ANDROID_CORE_CACHE=~/.soomla/cache/android-core
 mkdir -p $ANDROID_CORE_CACHE
 
 mkdir -p libs
