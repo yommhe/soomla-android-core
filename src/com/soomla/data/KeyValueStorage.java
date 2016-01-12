@@ -166,7 +166,7 @@ public class KeyValueStorage {
     }
 
     public KeyValueStorage(String storageName, String secret) {
-        if (TextUtils.isEmpty(secret)) {
+        if (secret == null) {
             throw new InvalidParameterException("You must initialize KeyValueStorage with a secret. storageName: " + mStorageName);
         }
 
