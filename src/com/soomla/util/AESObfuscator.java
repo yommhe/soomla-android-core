@@ -53,6 +53,7 @@ public class AESObfuscator {
 
     private Cipher mEncryptor;
     private Cipher mDecryptor;
+    private SecretKey mSecret;
 
     /**
      * Constructor
@@ -107,12 +108,16 @@ public class AESObfuscator {
             }
         }
 
-        SecretKey secret = new SecretKeySpec(passwordData, "AES");
+        mSecret = new SecretKeySpec(passwordData, "AES");
+        initCiphers();
+    }
+
+    private void initCiphers() {
         try {
             mEncryptor = Cipher.getInstance(CIPHER_ALGORITHM);
-            mEncryptor.init(Cipher.ENCRYPT_MODE, secret, new IvParameterSpec(IV));
+            mEncryptor.init(Cipher.ENCRYPT_MODE, mSecret, new IvParameterSpec(IV));
             mDecryptor = Cipher.getInstance(CIPHER_ALGORITHM);
-            mDecryptor.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(IV));
+            mDecryptor.init(Cipher.DECRYPT_MODE, mSecret, new IvParameterSpec(IV));
         } catch (GeneralSecurityException e) {
             // This can't happen on a compatible Android device.
             throw new RuntimeException("Invalid environment 2", e);
@@ -131,8 +136,10 @@ public class AESObfuscator {
             // Header is appended as an integrity check
             return Base64.encode(mEncryptor.doFinal((header + original).getBytes(UTF8)));
         } catch (UnsupportedEncodingException e) {
+            initCiphers();
             throw new RuntimeException("Invalid environment", e);
         } catch (GeneralSecurityException e) {
+            initCiphers();
             throw new RuntimeException("Invalid environment", e);
         }
     }
@@ -156,10 +163,13 @@ public class AESObfuscator {
             }
             return result.substring(header.length(), result.length());
         } catch (Base64DecoderException e) {
+            initCiphers();
             throw new ValidationException(e.getMessage() + ":" + obfuscated);
         } catch (IllegalBlockSizeException e) {
+            initCiphers();
             throw new ValidationException(e.getMessage() + ":" + obfuscated);
         } catch (BadPaddingException e) {
+            initCiphers();
             throw new ValidationException(e.getMessage() + ":" + obfuscated);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Invalid environment", e);
