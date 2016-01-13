@@ -97,7 +97,7 @@ public abstract class Foreground {
 
         // Constructor for inheriting class
         public ForegroundNew() {
-            SoomlaApp.instance().registerActivityLifecycleCallbacks(this);
+            SoomlaApp.appInstance().registerActivityLifecycleCallbacks(this);
         }
 
         @Override
