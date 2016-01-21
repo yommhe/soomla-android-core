@@ -19,3 +19,14 @@ then
     fi
     cp $ANDROID_CORE_CACHE/$SQUARE_OTTO_NAME libs/$SQUARE_OTTO_NAME
 fi
+
+KEEVA_NAME=keeva-1.0.0.jar
+if [ ! -f libs/$KEEVA_NAME ];
+then
+    if [ ! -f $ANDROID_CORE_CACHE/$KEEVA_NAME ];
+    then
+        curl -Lo $ANDROID_CORE_CACHE/$KEEVA_NAME.tmp http://library.soom.la/fetch/keeva-jar/1.0.0?cf=dl_deps
+        mv $ANDROID_CORE_CACHE/$KEEVA_NAME.tmp $ANDROID_CORE_CACHE/$KEEVA_NAME
+    fi
+    cp $ANDROID_CORE_CACHE/$KEEVA_NAME libs/$KEEVA_NAME
+fi

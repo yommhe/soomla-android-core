@@ -66,7 +66,7 @@ public class SoomlaUtils {
      *
      * @return androidId which is the id of the device being used
      */
-    public static String deviceId() {
+    public static String deviceId() { //TODO remove!!!!
         String androidId = Settings.Secure.getString(SoomlaApp.getAppContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         if (androidId == null) {
@@ -80,6 +80,15 @@ public class SoomlaUtils {
         return androidId;
     }
 
+    private static String generateSoomlaId() { //TODO remove!!!!!!
+        String generatedId = KeyValueStorage.getValue(DB_KEY_SOOMLA_GENERATED_ID);
+        if (TextUtils.isEmpty(generatedId)) {
+            generatedId = "SOOMLA_ID_a" + String.format("%05d", new Random().nextInt(100000)) + String.format("%05d", new Random().nextInt(100000));
+            KeyValueStorage.setValue(DB_KEY_SOOMLA_GENERATED_ID, generatedId);
+        }
+        return generatedId;
+    }
+
     /**
      * Retrieves the class name (to be used for serialization/deserialization
      * for the passed instance
@@ -90,19 +99,12 @@ public class SoomlaUtils {
         return target.getClass().getSimpleName();
     }
 
-	private static String generateSoomlaId() {
-		String generatedId = KeyValueStorage.getValue(DB_KEY_SOOMLA_GENERATED_ID);
-		if (TextUtils.isEmpty(generatedId)) {
-			generatedId = "SOOMLA_ID_a" + String.format("%05d", new Random().nextInt(100000)) + String.format("%05d", new Random().nextInt(100000));
-			KeyValueStorage.setValue(DB_KEY_SOOMLA_GENERATED_ID, generatedId);
-		}
-		return generatedId;
-	}
+
 
 
     /** Private Members **/
 
     private static String TAG = "SOOMLA SoomlaUtils"; //used for Log messages
 
-	private static final String DB_KEY_SOOMLA_GENERATED_ID = SoomlaConfig.DB_KEY_PREFIX + "generatedid";
+	private static final String DB_KEY_SOOMLA_GENERATED_ID = SoomlaConfig.DB_KEY_PREFIX + "generatedid"; //TODO remove!!!!!
 }
