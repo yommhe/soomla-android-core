@@ -169,8 +169,11 @@ public class KeyValueStorage {
             Field obfuscationSaltField = KeevaConfig.class.getDeclaredField("obfuscationSalt");
             obfuscationSaltField.setAccessible(true);
             obfuscationSaltField.set(null, SoomlaConfig.obfuscationSalt);
+            Field dbDeleteField = KeevaConfig.class.getDeclaredField("DB_DELETE");
+            dbDeleteField.setAccessible(true);
+            dbDeleteField.set(null, SoomlaConfig.DB_DELETE);
         } catch (Exception e) {
-            SoomlaUtils.LogError(TAG, "Error setting SOOMLA's obfuscation salt to Keeva " + e.getLocalizedMessage());
+            SoomlaUtils.LogError(TAG, "Error setting SOOMLA's config to Keeva " + e.getLocalizedMessage());
         }
         mKeeva = new Keeva(SoomlaApp.getAppContext(), storageName, secret);
     }
