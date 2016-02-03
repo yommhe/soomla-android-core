@@ -1,3 +1,8 @@
+### v1.3.0 [view commit logs](https://github.com/soomla/soomla-android-core/compare/v1.2.0...v1.3.0)
+
+* Changes
+  * Changed KeyValueStorage implementation to use Keeva
+
 ### v1.2.0 [view commit logs](https://github.com/soomla/soomla-android-core/compare/v1.1.1...v1.2.0)
 
 * New Features
